@@ -22,9 +22,7 @@ describe('Rendering the Tokens page', () => {
     });
 
     test('rendering the Tokens page when wallet has no coins', async () => {
-        renderWithProviders(<App />, { initialRoute: '/tx-approval/XYZ' });
-
-        // TODO: correct assertion (and make it pass)
-        // await screen.findByText('FOOBAR');
+        const view = renderWithProviders(<App />, { initialRoute: '/tx-approval/95ae4a0d-0b7b-478b-ab70-bc3fe291540e' });
+        await screen.findByText('Approve');
     });
 });
