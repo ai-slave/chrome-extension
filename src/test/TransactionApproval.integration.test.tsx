@@ -4,9 +4,13 @@ import * as React from 'react';
 import App from '_app/index';
 import { fakeBrowser } from '_src/test/utils/fake-browser';
 import { renderWithProviders } from '_src/test/utils/react-rendering';
+import {setTransactionRequests} from "_redux/slices/transaction-requests";
+import type {TransactionRequest} from "_payloads/transactions";
 
-describe('Rendering the Tokens page', () => {
+describe('The Transaction Approval popup', () => {
     beforeEach(async () => {
+
+        // TODO: Dry this up with code in other tests; also add comments to show unencrypted keys/values
         await fakeBrowser.storage.local.set({
             f7409e40f148e2b9ce97:
                 '{"encryptedText":"f4126b7dd11ee22b1d58e6707e4c5e3d4074","saltString":"e7fce231b811f0937403365fc37d29ca","nonceString":"d83c6161a6468af03bdd870be2877ac0"}',
@@ -19,10 +23,42 @@ describe('Rendering the Tokens page', () => {
             '918ad029b1d5f896a937cf34':
                 '{"encryptedText":"13bd1b19a4dfa5234ba5b36db656e1216c978ea700e7a9c7c7a10d00e4af24fd6149c3946711516767742e3aa686b52d0cc7b553932b9b69818ddd4911b7ecd38cf66cc7e6d0ec3714d3bfd036c8cb1c64c595e4b591e8ec22e4ba16e368ac9a628bd51d5207b003356d92eb2cacf4cfc1d7cfb34ee6ed51a96f48ddef0ce690758883dfcd2d829cb7a20ede373a3defbf12c26c7ce2b49b5eb10573e4d2b69b657d030e60106b9c48b27959bfb3e0724d1b9098aced73f4bd17447c5d145752c8ac5b5b58f3699755a45e6ceeeead866ced34209dac82375bb53204763bc2cd6ee4da5f3e208dfbd5fd989dd8764a0a5bac860e965bbe12830968ced9e6f1f3c6093378e2d64454bc1f926a0673aedf12140f6010ee4d9e103a8d4c8c0c1e19b5d42ecb95c89bec2da10fd3dbe01a7583e3c00e84c7b4c0be76d3f5ef7a439733c87a9cd06acbc48246532e59f0b925873859607074aee13e6bd0da56b24350c2","saltString":"025630aa4689b50a880beba7c3476c79","nonceString":"7b84988c00391644c10db323266153b5"}',
         });
+        await fakeBrowser.storage.local.set({
+            '9c86d02da1df':
+                '{"encryptedText":"e4687365c6907443a7daae3966e98658e8ae963210754c83","saltString":"efca629a87f1519e79781e3712e732a2","nonceString":"9ce0eba7986ada833bcb4966721967c7"}',
+        });
     });
 
-    test('rendering the Tokens page when wallet has no coins', async () => {
+    test('it shows basic info about the transaction', async () => {
         const view = renderWithProviders(<App />, { initialRoute: '/tx-approval/95ae4a0d-0b7b-478b-ab70-bc3fe291540e' });
-        await screen.findByText('Approve');
+
+        const txRequest: TransactionRequest = {
+            "id": "95ae4a0d-0b7b-478b-ab70-bc3fe291540e",
+            "approved": null,
+            "origin": "https://ethoswallet.xyz",
+            "originFavIcon": "https://ethoswallet.xyz/favicon.ico",
+            "createdDate": "2022-11-29T23:33:53.084Z",
+            "tx": {
+                "type": "v2",
+                "data": {
+                    "kind": "pay",
+                    "data": {
+                        "inputCoins": [
+                            "0x19fe0d83a3e3cb15570b6edc1160a15cc894e690"
+                        ],
+                        "recipients": [
+                            "moral pen wish ketchup gadget world alien inquiry just install audit federal"
+                        ],
+                        "amounts": [
+                            1000000
+                        ],
+                        "gasBudget": 1000
+                    }
+                }
+            }
+        }
+
+        view.store.dispatch(setTransactionRequests([txRequest]));
+        await screen.findByText('Transfer Asset');
     });
 });
