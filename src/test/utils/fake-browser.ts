@@ -1,6 +1,9 @@
 // This module provides fake implementations of the webextension-polyfill Browser object
 // NOTE: this is incomplete and provides just enough implementation for tests to pass
 
+import {Runtime} from "webextension-polyfill";
+import {Events} from "webextension-polyfill/namespaces/events";
+
 let records: Record<string, unknown> = {};
 
 function fakeLocalStorageGet(
@@ -27,7 +30,9 @@ async function fakeLocalStorageSet(
 }
 
 export const fakeBrowser = {
-    runtime: { id: 'chrome-runtime-id' },
+    runtime: { id: 'chrome-runtime-id', connect: () => {
+        return {postMessage: jest.fn()}}
+    },
     storage: {
         local: {
             get: fakeLocalStorageGet,

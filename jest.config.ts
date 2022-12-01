@@ -10,7 +10,7 @@ const pathsMappings = pathsToModuleNameMapper(compilerOptions.paths, {
     prefix: '<rootDir>/',
 });
 const cssMappings = {
-    '\\.(scss|jpg|png)$': '<rootDir>/src/test/utils/file-mock.js',
+    '\\.(css|scss|jpg|png)$': '<rootDir>/src/test/utils/file-mock.js',
 };
 const esmMappings = {
     uuid: '<rootDir>/node_modules/uuid/dist/index.js',
@@ -18,7 +18,7 @@ const esmMappings = {
 const config: Config.InitialOptions = {
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
-    moduleNameMapper: { ...pathsMappings, ...cssMappings, ...esmMappings },
+    moduleNameMapper: { ...cssMappings, ...pathsMappings, ...esmMappings },
     testPathIgnorePatterns: ['/node_modules/', '/dist/'],
     setupFilesAfterEnv: ['./src/test/utils/setup-tests.ts'],
 };

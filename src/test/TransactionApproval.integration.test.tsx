@@ -6,6 +6,7 @@ import { fakeBrowser } from '_src/test/utils/fake-browser';
 import { renderWithProviders } from '_src/test/utils/react-rendering';
 import {setTransactionRequests} from "_redux/slices/transaction-requests";
 import type {TransactionRequest} from "_payloads/transactions";
+import {init} from "_src/ui/init";
 
 describe('The Transaction Approval popup', () => {
     beforeEach(async () => {
@@ -30,6 +31,8 @@ describe('The Transaction Approval popup', () => {
     });
 
     test('it shows basic info about the transaction', async () => {
+
+        await init();
         const view = renderWithProviders(<App />, { initialRoute: '/tx-approval/95ae4a0d-0b7b-478b-ab70-bc3fe291540e' });
 
         const txRequest: TransactionRequest = {
