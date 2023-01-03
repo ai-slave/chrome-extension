@@ -6,6 +6,7 @@ import mockSuiObjects from './utils/mockchain';
 import App from '_app/index';
 import { BASE_URL } from '_src/shared/constants';
 import { renderWithProviders } from '_src/test/utils/react-rendering';
+import * as React from "react";
 
 describe('Email Authentication', () => {
     test('User can enter email and is prompted to wait for the magic login link', async () => {
@@ -65,15 +66,8 @@ describe('Email Authentication', () => {
         renderWithProviders(<App />, {
             initialRoute: '/initialize/hosted/logging-in',
         });
-
-        await screen.findByTestId('loading');
-
-        // This timeout is here because simulateIframeSendingAccessCode was getting called
-        // before the useEffect in logging-in.tsx was running, resulting in the iframe never
-        // receiving the message.
-        await new Promise((r) => setTimeout(r, 1));
+        await screen.findByTitle('wallet');
         simulateIframeSendingAccessCode(fakeAccessToken);
-
         await screen.findByText('Get started with Sui');
     });
 
